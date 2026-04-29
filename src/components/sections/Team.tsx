@@ -1,10 +1,10 @@
-import t1 from "@/assets/team-1.jpg";
-import t2 from "@/assets/team-2.jpg";
+import t1 from "@/assets/team-1.jpg.jpeg";
+import t2 from "@/assets/team-2.jpg.jpeg";
 import { Play } from "lucide-react";
 
 const team = [
-  { img: t1, name: "DR. PETER KHAKINA", role: "Founder & Chairperson" },
-  { img: t2, name: "JIM NDURUCHI", role: "Director of Programs" },
+  { img: t1, name: "Jim Nduruchi", role: "Founder & Chairperson" },
+  { img: t2, name: "Peter Khakina", role: "Director of Programs" },
 ];
 
 export const Team = () => (
