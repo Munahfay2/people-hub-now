@@ -1,17 +1,36 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Play, UserPlus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import t1 from "@/assets/team-1.jpg";
 import t2 from "@/assets/team-2.jpg";
 import t3 from "@/assets/team-3.jpg";
 import t4 from "@/assets/team-4.jpg";
-import { Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const team = [
-  { img: t1, name: "Hon. James Wafula", role: "Founder & Chairperson" },
-  { img: t2, name: "Grace Nasimiyu", role: "Director of Programs" },
-  { img: t3, name: "Patrick Simiyu", role: "Community Liaison" },
-  { img: t4, name: "Mercy Khasoa", role: "Outreach Coordinator" },
-];
+const fallbacks = [t1, t2, t3, t4];
 
-export const Team = () => (
+type Member = {
+  id: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  photo_url: string | null;
+};
+
+export const Team = () => {
+  const [members, setMembers] = useState<Member[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("team_members")
+      .select("id,name,role,bio,photo_url,display_order")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true })
+      .then(({ data }) => setMembers((data as Member[]) ?? []));
+  }, []);
+
+  return (
   <section id="team" className="py-24 md:py-32">
     <div className="container">
       <div className="max-w-3xl mb-16">
@@ -24,12 +43,12 @@ export const Team = () => (
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-        {team.map((m) => (
-          <article key={m.name} className="group">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {members.map((m, i) => (
+          <article key={m.id} className="group">
             <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted shadow-soft">
               <img
-                src={m.img}
+                src={m.photo_url || fallbacks[i % fallbacks.length]}
                 alt={m.name}
                 width={768}
                 height={896}
@@ -40,13 +59,30 @@ export const Team = () => (
               <div className="absolute bottom-0 inset-x-0 p-5 text-primary-foreground">
                 <div className="font-display font-bold text-lg">{m.name}</div>
                 <div className="text-sm text-primary-foreground/80">{m.role}</div>
+                {m.bio && (
+                  <p className="mt-2 text-xs text-primary-foreground/80 line-clamp-3">{m.bio}</p>
+                )}
               </div>
             </div>
           </article>
         ))}
+        <article className="group">
+          <div className="relative aspect-[3/4] rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 p-6 flex flex-col items-center justify-center text-center">
+            <div className="h-14 w-14 rounded-full bg-accent/15 grid place-items-center mb-4">
+              <UserPlus className="h-7 w-7 text-accent" />
+            </div>
+            <h3 className="font-display text-xl font-bold text-foreground">Join the Team</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Help us build a Bungoma free of poverty. Volunteer or apply for a role.
+            </p>
+            <Button asChild variant="hero" size="sm" className="mt-5">
+              <Link to="/join">Apply now</Link>
+            </Button>
+          </div>
+        </article>
       </div>
 
-      <div className="rounded-3xl overflow-hidden shadow-elegant bg-card border border-border">
+      <div className="rounded-3xl overflow-hidden shadow-elegant bg-card border border-border mt-8">
         <div className="grid lg:grid-cols-5">
           <div className="lg:col-span-2 p-8 md:p-12 flex flex-col justify-center">
             <span className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Watch</span>
@@ -78,4 +114,5 @@ export const Team = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
