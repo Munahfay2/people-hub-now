@@ -10,7 +10,7 @@ export const About = () => (
             Building a united, prosperous <em className="not-italic text-accent">Bungoma</em>.
           </h2>
           <div className="mt-8 inline-block px-5 py-3 bg-warm-gradient rounded-full text-accent-foreground font-display italic text-lg shadow-warm">
-            Motto: "Skiza Ground"
+            Motto: "Umaskini Apana (Zero Poverty)"
           </div>
         </div>
         <div className="lg:col-span-7 space-y-6 text-muted-foreground text-lg leading-relaxed">
